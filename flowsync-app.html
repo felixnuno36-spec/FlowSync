@@ -1,0 +1,1966 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlowSync — AI Automation Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700;900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #09090B;
+  --bg2: #111113;
+  --bg3: #18181B;
+  --bg4: #1C1C1F;
+  --surface: #27272A;
+  --surface2: #3F3F46;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #FAFAFA;
+  --text2: #A1A1AA;
+  --text3: #52525B;
+  --accent: #F59E0B;
+  --accent2: #FCD34D;
+  --accent-dim: rgba(245,158,11,0.12);
+  --accent-dim2: rgba(245,158,11,0.06);
+  --green: #10B981;
+  --green-dim: rgba(16,185,129,0.12);
+  --blue: #3B82F6;
+  --blue-dim: rgba(59,130,246,0.12);
+  --red: #EF4444;
+  --red-dim: rgba(239,68,68,0.12);
+  --purple: #8B5CF6;
+  --purple-dim: rgba(139,92,246,0.12);
+  --pink: #EC4899;
+  --pink-dim: rgba(236,72,153,0.12);
+  --font: 'Geist', sans-serif;
+  --font-serif: 'Instrument Serif', serif;
+  --font-mono: 'Geist Mono', monospace;
+  --radius: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --shadow: 0 0 0 1px var(--border), 0 4px 24px rgba(0,0,0,0.4);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+a { text-decoration: none; color: inherit; }
+button { font-family: var(--font); cursor: pointer; }
+input, select, textarea { font-family: var(--font); }
+
+/* ══════════════════════════════════════
+   SCROLLBAR
+══════════════════════════════════════ */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 2px; }
+
+/* ══════════════════════════════════════
+   PAGES SYSTEM
+══════════════════════════════════════ */
+.page { display: none; min-height: 100vh; }
+.page.active { display: block; }
+
+/* ══════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2.5rem; height: 60px;
+  background: rgba(9,9,11,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 1.1rem; font-weight: 700; letter-spacing: -0.03em;
+  cursor: pointer;
+}
+.nav-logo-icon {
+  width: 28px; height: 28px; background: var(--accent);
+  border-radius: 7px; display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: var(--bg);
+}
+.nav-center { display: flex; align-items: center; gap: 0; }
+.nav-link {
+  padding: 0.4rem 0.9rem; font-size: 0.85rem; color: var(--text2);
+  border-radius: var(--radius); transition: all 0.15s; cursor: pointer;
+  border: none; background: transparent;
+}
+.nav-link:hover { color: var(--text); background: var(--bg3); }
+.nav-link.active-nav { color: var(--text); }
+.nav-right { display: flex; align-items: center; gap: 8px; }
+.btn-ghost {
+  padding: 0.45rem 1rem; font-size: 0.82rem; color: var(--text2);
+  background: transparent; border: 1px solid var(--border2); border-radius: 8px;
+  transition: all 0.15s;
+}
+.btn-ghost:hover { color: var(--text); border-color: var(--surface2); background: var(--bg3); }
+.btn-accent {
+  padding: 0.45rem 1.1rem; font-size: 0.82rem; font-weight: 600;
+  background: var(--accent); color: var(--bg); border: none; border-radius: 8px;
+  transition: all 0.15s;
+}
+.btn-accent:hover { background: var(--accent2); }
+.nav-avatar {
+  width: 30px; height: 30px; border-radius: 50%; background: var(--accent-dim);
+  border: 1px solid var(--accent); display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: var(--accent); cursor: pointer;
+}
+
+/* ══════════════════════════════════════
+   LANDING PAGE
+══════════════════════════════════════ */
+#page-landing {
+  background: var(--bg);
+}
+.landing-hero {
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 8rem 2rem 4rem; text-align: center;
+  position: relative; overflow: hidden;
+}
+.hero-glow {
+  position: absolute; width: 800px; height: 800px;
+  background: radial-gradient(circle, rgba(245,158,11,0.06) 0%, transparent 70%);
+  top: 50%; left: 50%; transform: translate(-50%,-55%); pointer-events: none;
+}
+.hero-grid {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 60px 60px; mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+}
+.badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--accent-dim); border: 1px solid rgba(245,158,11,0.25);
+  border-radius: 100px; padding: 0.3rem 0.9rem;
+  font-size: 0.75rem; font-weight: 500; color: var(--accent);
+  margin-bottom: 2rem; position: relative; z-index: 1;
+}
+.badge-dot { width: 5px; height: 5px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.4)} }
+
+.hero-title {
+  font-family: var(--font-serif);
+  font-size: clamp(3rem, 7vw, 6.5rem);
+  font-weight: 400; line-height: 1.0; letter-spacing: -0.02em;
+  margin-bottom: 1.5rem; position: relative; z-index: 1;
+  max-width: 900px;
+}
+.hero-title em { font-style: italic; color: var(--accent); }
+.hero-title span { display: block; }
+
+.hero-sub {
+  font-size: 1.1rem; color: var(--text2); max-width: 540px;
+  margin-bottom: 2.5rem; line-height: 1.75; font-weight: 300;
+  position: relative; z-index: 1;
+}
+
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; position: relative; z-index: 1; }
+.btn-lg {
+  padding: 0.85rem 2rem; font-size: 0.95rem; font-weight: 600;
+  border-radius: var(--radius); transition: all 0.2s;
+  display: flex; align-items: center; gap: 8px;
+}
+.btn-lg-accent { background: var(--accent); color: var(--bg); border: none; }
+.btn-lg-accent:hover { background: var(--accent2); transform: translateY(-1px); box-shadow: 0 8px 30px rgba(245,158,11,0.25); }
+.btn-lg-outline { background: transparent; color: var(--text2); border: 1px solid var(--border2); }
+.btn-lg-outline:hover { color: var(--text); border-color: var(--surface2); background: var(--bg3); }
+
+.hero-social-proof {
+  margin-top: 4rem; display: flex; align-items: center; gap: 1.5rem;
+  position: relative; z-index: 1; flex-wrap: wrap; justify-content: center;
+}
+.avatars { display: flex; }
+.av { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--bg); margin-left: -8px; background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; }
+.av:first-child { margin-left: 0; }
+.av1 { background: #7C3AED; }
+.av2 { background: #059669; }
+.av3 { background: #DC2626; }
+.av4 { background: #2563EB; }
+.av5 { background: var(--accent); color: var(--bg); }
+.social-text { font-size: 0.82rem; color: var(--text2); }
+.social-text strong { color: var(--text); }
+.divider-v { width: 1px; height: 24px; background: var(--border2); }
+.stars { color: var(--accent); font-size: 13px; letter-spacing: 1px; }
+
+/* DASHBOARD PREVIEW */
+.dashboard-preview {
+  max-width: 1100px; margin: 0 auto;
+  padding: 0 2rem 6rem;
+}
+.preview-wrapper {
+  border: 1px solid var(--border2); border-radius: var(--radius-xl);
+  overflow: hidden; background: var(--bg2);
+  box-shadow: 0 40px 120px rgba(0,0,0,0.6), 0 0 0 1px var(--border2);
+}
+.preview-bar {
+  background: var(--bg3); padding: 0.8rem 1.25rem;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+.preview-dots { display: flex; gap: 6px; }
+.preview-dot { width: 10px; height: 10px; border-radius: 50%; }
+.preview-url { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text3); background: var(--bg4); padding: 0.25rem 0.9rem; border-radius: 6px; border: 1px solid var(--border); }
+
+/* FEATURES SECTION */
+.section { padding: 6rem 2rem; max-width: 1100px; margin: 0 auto; }
+.section-eyebrow { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.75rem; font-weight: 600; }
+.section-headline { font-family: var(--font-serif); font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 400; letter-spacing: -0.02em; margin-bottom: 1rem; line-height: 1.1; }
+.section-sub { font-size: 1rem; color: var(--text2); max-width: 480px; line-height: 1.75; }
+
+.features-bento {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto auto;
+  gap: 12px; margin-top: 3rem;
+}
+.bento-card {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 1.75rem; transition: border-color 0.2s, transform 0.2s;
+  position: relative; overflow: hidden;
+}
+.bento-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+.bento-wide { grid-column: span 2; }
+.bento-tall { grid-row: span 2; }
+.bento-icon {
+  width: 40px; height: 40px; border-radius: 10px; margin-bottom: 1.25rem;
+  display: flex; align-items: center; justify-content: center; font-size: 18px;
+}
+.bento-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
+.bento-card p { font-size: 0.85rem; color: var(--text2); line-height: 1.65; }
+.bento-mini-chart { margin-top: 1.25rem; height: 60px; position: relative; }
+.mini-bar { position: absolute; bottom: 0; width: 10px; background: var(--accent-dim); border-radius: 3px; border-bottom: 2px solid var(--accent); transition: height 0.5s; }
+
+/* INTEGRATIONS */
+.integrations-grid {
+  display: grid; grid-template-columns: repeat(6, 1fr);
+  gap: 10px; margin-top: 3rem;
+}
+.integration-pill {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 0.75rem 0.5rem; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  font-size: 0.72rem; color: var(--text2); transition: all 0.15s; cursor: pointer;
+}
+.integration-pill:hover { border-color: var(--border2); color: var(--text); background: var(--bg3); }
+.int-icon { font-size: 22px; }
+
+/* PRICING */
+.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 3rem; }
+.price-card {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-xl);
+  padding: 2rem; transition: all 0.2s; display: flex; flex-direction: column;
+}
+.price-card.featured {
+  background: linear-gradient(135deg, var(--accent-dim) 0%, var(--bg2) 100%);
+  border-color: rgba(245,158,11,0.3);
+}
+.price-card:hover { border-color: var(--border2); transform: translateY(-3px); }
+.price-card.featured:hover { border-color: rgba(245,158,11,0.5); }
+.plan-badge { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); margin-bottom: 1rem; }
+.price-card.featured .plan-badge { color: var(--accent); }
+.plan-popular { background: var(--accent-dim); border: 1px solid rgba(245,158,11,0.3); border-radius: 100px; padding: 2px 10px; font-size: 0.68rem; font-weight: 600; color: var(--accent); margin-left: 8px; }
+.plan-name { font-family: var(--font-serif); font-size: 1.6rem; margin-bottom: 0.5rem; }
+.plan-price { display: flex; align-items: baseline; gap: 4px; margin-bottom: 0.25rem; }
+.plan-amount { font-size: 2.8rem; font-weight: 700; letter-spacing: -0.04em; }
+.plan-period { font-size: 0.82rem; color: var(--text2); }
+.plan-desc { font-size: 0.82rem; color: var(--text2); margin-bottom: 1.5rem; line-height: 1.5; }
+.plan-divider { border: none; border-top: 1px solid var(--border); margin-bottom: 1.25rem; }
+.plan-features { list-style: none; display: flex; flex-direction: column; gap: 10px; flex: 1; margin-bottom: 1.75rem; }
+.plan-features li { font-size: 0.83rem; display: flex; align-items: flex-start; gap: 9px; color: var(--text2); }
+.plan-features li .fi { font-size: 12px; margin-top: 2px; flex-shrink: 0; }
+.fi-yes { color: var(--green); }
+.fi-no { color: var(--text3); }
+.btn-plan {
+  width: 100%; padding: 0.75rem; border-radius: var(--radius); font-size: 0.88rem; font-weight: 600;
+  border: 1px solid var(--border2); background: var(--bg3); color: var(--text); transition: all 0.2s;
+}
+.btn-plan:hover { background: var(--surface); border-color: var(--surface2); }
+.price-card.featured .btn-plan { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.price-card.featured .btn-plan:hover { background: var(--accent2); }
+
+/* TESTIMONIALS */
+.testimonials { padding: 6rem 2rem; background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.testimonials-inner { max-width: 1100px; margin: 0 auto; }
+.testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 3rem; }
+.testi-card {
+  background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 1.5rem; transition: all 0.2s;
+}
+.testi-card:hover { border-color: var(--border2); }
+.testi-stars { color: var(--accent); font-size: 12px; margin-bottom: 0.75rem; }
+.testi-text { font-size: 0.88rem; color: var(--text2); line-height: 1.7; margin-bottom: 1.25rem; }
+.testi-text strong { color: var(--text); font-weight: 500; }
+.testi-author { display: flex; align-items: center; gap: 10px; }
+.testi-av { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+.testi-name { font-size: 0.83rem; font-weight: 600; }
+.testi-role { font-size: 0.75rem; color: var(--text3); }
+
+/* STATS BAND */
+.stats-band { padding: 5rem 2rem; max-width: 1100px; margin: 0 auto; }
+.stats-inner { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius-xl); overflow: hidden; }
+.stat-item { background: var(--bg); padding: 2.5rem 2rem; text-align: center; }
+.stat-num { font-family: var(--font-serif); font-size: 3rem; color: var(--accent); margin-bottom: 0.4rem; line-height: 1; }
+.stat-label { font-size: 0.82rem; color: var(--text2); }
+
+/* FOOTER */
+footer {
+  border-top: 1px solid var(--border); padding: 4rem 2.5rem 2rem;
+  background: var(--bg);
+}
+.footer-inner { max-width: 1100px; margin: 0 auto; }
+.footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
+.footer-brand { }
+.footer-logo-wrap { display: flex; align-items: center; gap: 8px; margin-bottom: 1rem; font-size: 1rem; font-weight: 700; }
+.footer-tagline { font-size: 0.83rem; color: var(--text2); line-height: 1.6; max-width: 280px; margin-bottom: 1.5rem; }
+.footer-col h4 { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); margin-bottom: 1rem; }
+.footer-links { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.footer-links a { font-size: 0.83rem; color: var(--text2); transition: color 0.15s; }
+.footer-links a:hover { color: var(--text); }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 2rem; border-top: 1px solid var(--border); }
+.footer-copy { font-size: 0.78rem; color: var(--text3); }
+.footer-badges { display: flex; gap: 8px; }
+.footer-badge { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 3px 9px; font-size: 0.68rem; color: var(--text3); font-family: var(--font-mono); }
+
+/* ══════════════════════════════════════
+   APP DASHBOARD PAGE
+══════════════════════════════════════ */
+#page-app { background: var(--bg); padding-top: 60px; }
+.app-layout { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 60px); }
+
+/* SIDEBAR */
+.sidebar {
+  background: var(--bg2); border-right: 1px solid var(--border);
+  padding: 1.25rem 0.75rem; display: flex; flex-direction: column; gap: 2px;
+  position: sticky; top: 60px; height: calc(100vh - 60px); overflow-y: auto;
+}
+.sidebar-logo { padding: 0.25rem 0.75rem 1rem; font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.sidebar-logo-icon { width: 24px; height: 24px; background: var(--accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--bg); }
+.sidebar-section-label { font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); padding: 0.6rem 0.75rem 0.3rem; font-weight: 600; }
+.sidebar-item {
+  display: flex; align-items: center; gap: 9px; padding: 0.55rem 0.75rem;
+  border-radius: 8px; font-size: 0.83rem; color: var(--text2); cursor: pointer;
+  transition: all 0.15s; border: none; background: transparent; width: 100%; text-align: left;
+}
+.sidebar-item:hover { color: var(--text); background: var(--bg3); }
+.sidebar-item.active { color: var(--text); background: var(--bg3); font-weight: 500; }
+.sidebar-item.active .si-icon { color: var(--accent); }
+.si-icon { font-size: 15px; width: 18px; flex-shrink: 0; }
+.si-count { margin-left: auto; background: var(--bg4); color: var(--text3); font-size: 0.68rem; padding: 1px 6px; border-radius: 100px; }
+.si-badge { margin-left: auto; background: var(--red-dim); color: var(--red); font-size: 0.65rem; padding: 1px 6px; border-radius: 100px; }
+.sidebar-spacer { flex: 1; }
+.sidebar-user {
+  border-top: 1px solid var(--border); padding-top: 0.75rem; margin-top: 0.5rem;
+  display: flex; align-items: center; gap: 9px; padding: 0.75rem; cursor: pointer;
+  border-radius: 8px; transition: background 0.15s;
+}
+.sidebar-user:hover { background: var(--bg3); }
+.user-av { width: 30px; height: 30px; border-radius: 50%; background: var(--accent-dim); border: 1px solid rgba(245,158,11,0.3); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: var(--accent); flex-shrink: 0; }
+.user-info { min-width: 0; }
+.user-name { font-size: 0.8rem; font-weight: 600; truncate: ellipsis; }
+.user-plan { font-size: 0.68rem; color: var(--accent); }
+
+/* MAIN CONTENT */
+.app-main { overflow: auto; }
+
+/* DASHBOARD VIEW */
+.dash-view { padding: 2rem; display: none; }
+.dash-view.visible { display: block; }
+
+.dash-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 2rem; }
+.dash-title { font-family: var(--font-serif); font-size: 1.8rem; font-weight: 400; margin-bottom: 0.25rem; }
+.dash-sub { font-size: 0.83rem; color: var(--text2); }
+.dash-actions { display: flex; gap: 8px; }
+
+.kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 2rem; }
+.kpi-card {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+}
+.kpi-label { font-size: 0.75rem; color: var(--text2); margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: space-between; }
+.kpi-trend { font-size: 0.7rem; padding: 2px 6px; border-radius: 100px; }
+.kpi-trend.up { background: var(--green-dim); color: var(--green); }
+.kpi-trend.down { background: var(--red-dim); color: var(--red); }
+.kpi-value { font-size: 1.9rem; font-weight: 700; letter-spacing: -0.04em; margin-bottom: 0.25rem; }
+.kpi-desc { font-size: 0.72rem; color: var(--text3); }
+
+.dash-grid { display: grid; grid-template-columns: 1fr 380px; gap: 16px; margin-bottom: 16px; }
+.chart-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; }
+.chart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+.chart-title { font-size: 0.9rem; font-weight: 600; }
+.chart-legend { display: flex; gap: 12px; font-size: 0.72rem; color: var(--text2); }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+.chart-area { height: 200px; position: relative; }
+canvas#mainChart { width: 100% !important; height: 100% !important; }
+
+/* ACTIVITY FEED */
+.activity-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; }
+.activity-list { display: flex; flex-direction: column; gap: 0; }
+.activity-item {
+  display: flex; align-items: flex-start; gap: 10px; padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border); font-size: 0.8rem;
+}
+.activity-item:last-child { border-bottom: none; }
+.act-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+.act-text { flex: 1; }
+.act-name { font-weight: 500; color: var(--text); margin-bottom: 2px; }
+.act-meta { color: var(--text3); font-size: 0.72rem; }
+.act-time { font-size: 0.68rem; color: var(--text3); flex-shrink: 0; }
+
+/* WORKFLOWS TABLE */
+.table-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+.table-header-row { padding: 1.25rem 1.5rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
+.table-search { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 0.45rem 0.9rem; font-size: 0.82rem; color: var(--text); width: 220px; outline: none; transition: border-color 0.15s; }
+.table-search:focus { border-color: var(--accent); }
+.table-search::placeholder { color: var(--text3); }
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th { text-align: left; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text3); padding: 0.75rem 1.5rem; border-bottom: 1px solid var(--border); background: var(--bg3); }
+.data-table td { padding: 0.9rem 1.5rem; font-size: 0.83rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: var(--bg3); }
+.wf-name-cell { display: flex; align-items: center; gap: 10px; }
+.wf-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.wf-title { font-weight: 500; color: var(--text); }
+.wf-id { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text3); }
+.status-pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 100px; font-size: 0.72rem; font-weight: 500; }
+.status-active { background: var(--green-dim); color: var(--green); }
+.status-paused { background: var(--accent-dim); color: var(--accent); }
+.status-error { background: var(--red-dim); color: var(--red); }
+.status-draft { background: var(--bg4); color: var(--text3); }
+.status-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+/* WORKFLOW EDITOR */
+.editor-layout { height: calc(100vh - 60px); display: grid; grid-template-columns: 260px 1fr 280px; }
+.editor-panel { background: var(--bg2); border-right: 1px solid var(--border); overflow-y: auto; }
+.editor-panel.right { border-right: none; border-left: 1px solid var(--border); }
+.editor-panel-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); }
+.editor-panel-title { font-size: 0.82rem; font-weight: 600; }
+.editor-canvas { background: var(--bg); position: relative; overflow: hidden; cursor: grab; }
+.editor-canvas:active { cursor: grabbing; }
+.canvas-grid {
+  position: absolute; inset: -50%;
+  background-image: radial-gradient(circle, var(--border2) 1px, transparent 1px);
+  background-size: 28px 28px; pointer-events: none;
+}
+.canvas-content { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+
+/* WORKFLOW NODES */
+.wf-canvas { position: relative; width: 800px; height: 500px; }
+.wf-node {
+  position: absolute; background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: var(--radius-lg); padding: 0.9rem 1.1rem; cursor: pointer;
+  transition: all 0.15s; min-width: 160px; user-select: none;
+}
+.wf-node:hover, .wf-node.selected { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.wf-node-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.wf-node-icon { width: 26px; height: 26px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+.wf-node-name { font-size: 0.8rem; font-weight: 600; }
+.wf-node-type { font-size: 0.68rem; color: var(--text3); }
+.wf-node-port-in { position: absolute; left: -6px; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; border-radius: 50%; background: var(--bg); border: 2px solid var(--border2); transition: border-color 0.15s; }
+.wf-node-port-out { position: absolute; right: -6px; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; border-radius: 50%; background: var(--accent); border: 2px solid var(--bg); }
+.wf-node:hover .wf-node-port-in { border-color: var(--accent); }
+
+/* SVG CONNECTORS */
+.wf-svg { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+.wf-connector { fill: none; stroke: var(--border2); stroke-width: 2; }
+.wf-connector.active { stroke: var(--accent); stroke-width: 2; }
+
+/* NODE PALETTE */
+.node-palette { padding: 0.75rem; }
+.palette-section { margin-bottom: 1rem; }
+.palette-title { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); padding: 0.25rem 0.25rem 0.5rem; font-weight: 600; }
+.palette-item {
+  display: flex; align-items: center; gap: 8px; padding: 0.55rem 0.65rem;
+  border-radius: 8px; cursor: grab; font-size: 0.78rem; color: var(--text2);
+  border: 1px solid transparent; transition: all 0.15s; margin-bottom: 2px;
+}
+.palette-item:hover { background: var(--bg3); border-color: var(--border); color: var(--text); }
+.palette-icon { width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+
+/* PROPERTY PANEL */
+.prop-panel { padding: 1rem 1.25rem; }
+.prop-section { margin-bottom: 1.5rem; }
+.prop-label { font-size: 0.72rem; font-weight: 600; color: var(--text3); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.75rem; }
+.prop-field { margin-bottom: 0.75rem; }
+.prop-field label { display: block; font-size: 0.75rem; color: var(--text2); margin-bottom: 0.35rem; }
+.prop-input {
+  width: 100%; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px;
+  padding: 0.55rem 0.75rem; font-size: 0.82rem; color: var(--text); outline: none;
+  transition: border-color 0.15s;
+}
+.prop-input:focus { border-color: var(--accent); }
+.prop-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%2352525B' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; }
+.prop-toggle { display: flex; align-items: center; justify-content: space-between; }
+.toggle {
+  width: 36px; height: 20px; background: var(--surface); border-radius: 100px;
+  position: relative; cursor: pointer; transition: background 0.2s; flex-shrink: 0;
+  border: none;
+}
+.toggle.on { background: var(--accent); }
+.toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; background: white; border-radius: 50%; transition: transform 0.2s; }
+.toggle.on::after { transform: translateX(16px); }
+
+/* TOOLBAR */
+.editor-toolbar {
+  position: absolute; top: 1rem; left: 50%; transform: translateX(-50%);
+  background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius);
+  display: flex; align-items: center; gap: 2px; padding: 4px; z-index: 10;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+.tool-btn {
+  width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+  border-radius: 6px; font-size: 14px; color: var(--text2); background: transparent;
+  border: none; cursor: pointer; transition: all 0.15s;
+}
+.tool-btn:hover { background: var(--bg3); color: var(--text); }
+.tool-btn.active { background: var(--bg4); color: var(--accent); }
+.tool-sep { width: 1px; height: 20px; background: var(--border); margin: 0 4px; }
+
+/* RUN STATUS BAR */
+.run-status {
+  position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%);
+  background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius);
+  display: flex; align-items: center; gap: 12px; padding: 0.5rem 1.25rem; z-index: 10;
+  font-size: 0.78rem; color: var(--text2);
+}
+.run-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 1.5s infinite; }
+.run-sep { width: 1px; height: 14px; background: var(--border); }
+
+/* ANALYTICS VIEW */
+.analytics-header { margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+.time-tabs { display: flex; gap: 2px; background: var(--bg3); border-radius: 8px; padding: 3px; }
+.time-tab { padding: 0.3rem 0.75rem; font-size: 0.78rem; border-radius: 6px; border: none; background: transparent; color: var(--text2); cursor: pointer; transition: all 0.15s; }
+.time-tab.active { background: var(--bg2); color: var(--text); }
+
+.analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.analytics-grid .chart-card { }
+.heatmap-grid { display: grid; grid-template-columns: repeat(24, 1fr); gap: 2px; margin-top: 0.75rem; }
+.heat-cell { height: 14px; border-radius: 2px; background: var(--bg3); }
+.heat-low { background: rgba(245,158,11,0.15); }
+.heat-med { background: rgba(245,158,11,0.4); }
+.heat-high { background: rgba(245,158,11,0.75); }
+.heat-max { background: var(--accent); }
+
+/* SETTINGS VIEW */
+.settings-layout { display: grid; grid-template-columns: 200px 1fr; gap: 0; min-height: calc(100vh - 60px); }
+.settings-nav { background: var(--bg2); border-right: 1px solid var(--border); padding: 1.5rem 0.75rem; }
+.settings-content { padding: 2rem; max-width: 720px; }
+.settings-nav-item { display: flex; align-items: center; gap: 8px; padding: 0.5rem 0.75rem; border-radius: 8px; font-size: 0.83rem; color: var(--text2); cursor: pointer; margin-bottom: 2px; transition: all 0.15s; }
+.settings-nav-item:hover, .settings-nav-item.active { background: var(--bg3); color: var(--text); }
+.settings-section { margin-bottom: 2.5rem; }
+.settings-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.4rem; }
+.settings-desc { font-size: 0.83rem; color: var(--text2); margin-bottom: 1.5rem; }
+.settings-field { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+.settings-field-info label { font-size: 0.88rem; font-weight: 500; display: block; margin-bottom: 3px; }
+.settings-field-info p { font-size: 0.78rem; color: var(--text2); }
+.settings-input-wrap { min-width: 200px; }
+.settings-input { width: 100%; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 0.55rem 0.75rem; font-size: 0.83rem; color: var(--text); outline: none; }
+.settings-input:focus { border-color: var(--accent); }
+.plan-card-settings { background: var(--bg2); border: 1px solid rgba(245,158,11,0.3); border-radius: var(--radius-lg); padding: 1.5rem; display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: center; }
+.current-plan-name { font-size: 1rem; font-weight: 700; color: var(--accent); }
+.current-plan-desc { font-size: 0.82rem; color: var(--text2); margin-top: 4px; }
+.usage-bar-wrap { margin-top: 1rem; }
+.usage-label { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text2); margin-bottom: 6px; }
+.usage-bar { height: 6px; background: var(--bg4); border-radius: 3px; overflow: hidden; }
+.usage-fill { height: 100%; background: var(--accent); border-radius: 3px; }
+
+/* NOTIFICATIONS */
+.notif-banner {
+  position: fixed; bottom: 1.5rem; right: 1.5rem;
+  background: var(--bg2); border: 1px solid var(--green); border-radius: var(--radius-lg);
+  padding: 0.9rem 1.25rem; display: flex; align-items: center; gap: 10px;
+  font-size: 0.83rem; box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  z-index: 9999; transform: translateX(150%); transition: transform 0.3s ease;
+  max-width: 320px;
+}
+.notif-banner.show { transform: translateX(0); }
+.notif-icon { font-size: 16px; flex-shrink: 0; }
+.notif-text { flex: 1; color: var(--text2); }
+.notif-text strong { color: var(--text); }
+.notif-close { color: var(--text3); cursor: pointer; font-size: 16px; }
+
+/* MODAL */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 500;
+  display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px);
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius-xl);
+  padding: 2rem; width: 480px; max-width: 95vw;
+  animation: fadeUp 0.25s ease;
+}
+.modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+.modal-title { font-size: 1.1rem; font-weight: 700; }
+.modal-close { width: 30px; height: 30px; border-radius: 8px; background: var(--bg3); border: none; color: var(--text2); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: all 0.15s; }
+.modal-close:hover { background: var(--bg4); color: var(--text); }
+.modal-field { margin-bottom: 1rem; }
+.modal-field label { display: block; font-size: 0.78rem; font-weight: 500; color: var(--text2); margin-bottom: 0.4rem; }
+.modal-input { width: 100%; background: var(--bg3); border: 1px solid var(--border2); border-radius: 8px; padding: 0.65rem 0.9rem; font-size: 0.88rem; color: var(--text); outline: none; transition: border-color 0.15s; }
+.modal-input:focus { border-color: var(--accent); }
+.modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 1.5rem; }
+.template-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 1rem; }
+.template-item {
+  background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem;
+  cursor: pointer; transition: all 0.15s;
+}
+.template-item:hover, .template-item.selected { border-color: var(--accent); background: var(--accent-dim2); }
+.template-icon { font-size: 20px; margin-bottom: 6px; }
+.template-name { font-size: 0.8rem; font-weight: 600; margin-bottom: 2px; }
+.template-desc { font-size: 0.7rem; color: var(--text2); }
+
+/* ANIMATIONS */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.animate-in { animation: fadeUp 0.5s ease both; }
+.animate-in-delay-1 { animation-delay: 0.1s; }
+.animate-in-delay-2 { animation-delay: 0.2s; }
+.animate-in-delay-3 { animation-delay: 0.3s; }
+.animate-in-delay-4 { animation-delay: 0.4s; }
+
+/* COMMAND PALETTE */
+.cmd-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 800; display: none; align-items: flex-start; justify-content: center; padding-top: 20vh; backdrop-filter: blur(4px); }
+.cmd-overlay.open { display: flex; }
+.cmd-box { background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius-xl); width: 560px; max-width: 95vw; overflow: hidden; box-shadow: 0 24px 80px rgba(0,0,0,0.6); animation: fadeUp 0.2s ease; }
+.cmd-input-wrap { display: flex; align-items: center; gap: 10px; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); }
+.cmd-search-icon { font-size: 16px; color: var(--text3); }
+.cmd-input { flex: 1; background: transparent; border: none; outline: none; font-size: 0.95rem; color: var(--text); }
+.cmd-input::placeholder { color: var(--text3); }
+.cmd-shortcut { background: var(--bg4); border: 1px solid var(--border); border-radius: 5px; padding: 2px 6px; font-size: 0.68rem; font-family: var(--font-mono); color: var(--text3); }
+.cmd-results { padding: 0.5rem; max-height: 320px; overflow-y: auto; }
+.cmd-section-label { font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); padding: 0.5rem 0.75rem 0.25rem; font-weight: 600; }
+.cmd-item { display: flex; align-items: center; gap: 10px; padding: 0.6rem 0.75rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; color: var(--text2); transition: all 0.1s; }
+.cmd-item:hover, .cmd-item.selected { background: var(--bg3); color: var(--text); }
+.cmd-item-icon { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+.cmd-item-text { flex: 1; }
+.cmd-item-kbd { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text3); }
+
+/* SCROLLABLE AREA UTILITY */
+.overflow-auto { overflow: auto; }
+
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════
+     NOTIFICATION BANNER
+════════════════════════════════════════ -->
+<div class="notif-banner" id="notif">
+  <span class="notif-icon">✓</span>
+  <div class="notif-text"><strong id="notif-msg">Workflow guardado com sucesso</strong></div>
+  <span class="notif-close" onclick="hideNotif()">×</span>
+</div>
+
+<!-- ════════════════════════════════════════
+     NEW WORKFLOW MODAL
+════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-new-wf">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">Criar novo workflow</div>
+      <button class="modal-close" onclick="closeModal('modal-new-wf')">×</button>
+    </div>
+    <div class="modal-field">
+      <label>Nome do workflow</label>
+      <input class="modal-input" placeholder="Ex: Onboarding de clientes" id="wf-name-input">
+    </div>
+    <div class="modal-field">
+      <label>Escolher template</label>
+      <div class="template-grid" id="template-grid">
+        <div class="template-item selected" onclick="selectTemplate(this)">
+          <div class="template-icon">⚡</div>
+          <div class="template-name">Em branco</div>
+          <div class="template-desc">Começa do zero</div>
+        </div>
+        <div class="template-item" onclick="selectTemplate(this)">
+          <div class="template-icon">📧</div>
+          <div class="template-name">Email drip</div>
+          <div class="template-desc">Sequência de emails</div>
+        </div>
+        <div class="template-item" onclick="selectTemplate(this)">
+          <div class="template-icon">🤖</div>
+          <div class="template-name">AI Triagem</div>
+          <div class="template-desc">Classificação com IA</div>
+        </div>
+        <div class="template-item" onclick="selectTemplate(this)">
+          <div class="template-icon">🔔</div>
+          <div class="template-name">Alerta & Notif.</div>
+          <div class="template-desc">Alertas automáticos</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('modal-new-wf')">Cancelar</button>
+      <button class="btn-accent" onclick="createWorkflow()">Criar workflow →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     COMMAND PALETTE
+════════════════════════════════════════ -->
+<div class="cmd-overlay" id="cmd-palette">
+  <div class="cmd-box">
+    <div class="cmd-input-wrap">
+      <span class="cmd-search-icon">⌕</span>
+      <input class="cmd-input" placeholder="Pesquisar comandos, workflows, integrações..." id="cmd-input" oninput="filterCmd(this.value)">
+      <span class="cmd-shortcut">ESC</span>
+    </div>
+    <div class="cmd-results" id="cmd-results">
+      <div class="cmd-section-label">Navegar</div>
+      <div class="cmd-item" onclick="goToSection('dashboard'); closeCmd()"><div class="cmd-item-icon" style="background:var(--accent-dim)">📊</div><div class="cmd-item-text">Dashboard</div><span class="cmd-item-kbd">G D</span></div>
+      <div class="cmd-item" onclick="goToSection('workflows'); closeCmd()"><div class="cmd-item-icon" style="background:var(--blue-dim)">⚡</div><div class="cmd-item-text">Workflows</div><span class="cmd-item-kbd">G W</span></div>
+      <div class="cmd-item" onclick="goToSection('editor'); closeCmd()"><div class="cmd-item-icon" style="background:var(--purple-dim)">✏️</div><div class="cmd-item-text">Editor de workflows</div></div>
+      <div class="cmd-item" onclick="goToSection('analytics'); closeCmd()"><div class="cmd-item-icon" style="background:var(--green-dim)">📈</div><div class="cmd-item-text">Analytics</div><span class="cmd-item-kbd">G A</span></div>
+      <div class="cmd-section-label">Ações</div>
+      <div class="cmd-item" onclick="openModal('modal-new-wf'); closeCmd()"><div class="cmd-item-icon" style="background:var(--green-dim)">➕</div><div class="cmd-item-text">Novo workflow</div><span class="cmd-item-kbd">N W</span></div>
+      <div class="cmd-item" onclick="showNotif('Workflow duplicado!'); closeCmd()"><div class="cmd-item-icon" style="background:var(--bg4)">⎘</div><div class="cmd-item-text">Duplicar workflow</div></div>
+      <div class="cmd-section-label">Configurações</div>
+      <div class="cmd-item" onclick="goToSection('settings'); closeCmd()"><div class="cmd-item-icon" style="background:var(--bg4)">⚙️</div><div class="cmd-item-text">Configurações</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     NAVIGATION
+════════════════════════════════════════ -->
+<nav id="main-nav">
+  <div class="nav-logo" onclick="showPage('landing')">
+    <div class="nav-logo-icon">⚡</div>
+    FlowSync
+  </div>
+  <div class="nav-center" id="nav-landing-links">
+    <button class="nav-link" onclick="scrollToSection('features')">Produto</button>
+    <button class="nav-link" onclick="scrollToSection('integrations')">Integrações</button>
+    <button class="nav-link" onclick="scrollToSection('pricing')">Preços</button>
+    <button class="nav-link" onclick="scrollToSection('testimonials')">Reviews</button>
+  </div>
+  <div class="nav-center" id="nav-app-links" style="display:none">
+    <button class="nav-link" id="navbtn-dashboard" onclick="goToSection('dashboard')">Dashboard</button>
+    <button class="nav-link" id="navbtn-workflows" onclick="goToSection('workflows')">Workflows</button>
+    <button class="nav-link" id="navbtn-editor" onclick="goToSection('editor')">Editor</button>
+    <button class="nav-link" id="navbtn-analytics" onclick="goToSection('analytics')">Analytics</button>
+    <button class="nav-link" id="navbtn-settings" onclick="goToSection('settings')">Configurações</button>
+  </div>
+  <div class="nav-right">
+    <button class="btn-ghost" id="nav-login-btn" onclick="showApp()">Entrar</button>
+    <button class="btn-accent" id="nav-signup-btn" onclick="showApp()">Começar grátis →</button>
+    <button class="btn-ghost" id="nav-cmd-btn" style="display:none;font-family:var(--font-mono);font-size:0.75rem" onclick="openCmd()">⌘K</button>
+    <div class="nav-avatar" id="nav-avatar" style="display:none" onclick="goToSection('settings')">JP</div>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════════
+     LANDING PAGE
+════════════════════════════════════════ -->
+<div class="page active" id="page-landing">
+
+  <!-- HERO -->
+  <section class="landing-hero">
+    <div class="hero-glow"></div>
+    <div class="hero-grid"></div>
+    <div class="badge animate-in"><span class="badge-dot"></span> Novo — Integração com Claude AI disponível</div>
+    <h1 class="hero-title animate-in animate-in-delay-1">
+      <span>Automatiza o que</span>
+      <span><em>realmente</em> importa.</span>
+    </h1>
+    <p class="hero-sub animate-in animate-in-delay-2">FlowSync é a plataforma de automação que liga as tuas ferramentas, elimina trabalho repetitivo e dá à tua equipa superpoderes com IA generativa.</p>
+    <div class="hero-actions animate-in animate-in-delay-3">
+      <button class="btn-lg btn-lg-accent" onclick="showApp()">Começar grátis — sem cartão ↗</button>
+      <button class="btn-lg btn-lg-outline" onclick="showApp()">▶ Ver demo ao vivo</button>
+    </div>
+    <div class="hero-social-proof animate-in animate-in-delay-4">
+      <div class="avatars">
+        <div class="av av1">MR</div>
+        <div class="av av2">PS</div>
+        <div class="av av3">AC</div>
+        <div class="av av4">TK</div>
+        <div class="av av5">+</div>
+      </div>
+      <div class="social-text"><strong>4.800+</strong> equipas já automatizaram</div>
+      <div class="divider-v"></div>
+      <div class="stars">★★★★★</div>
+      <div class="social-text"><strong>4.9/5</strong> em G2 & Capterra</div>
+    </div>
+  </section>
+
+  <!-- DASHBOARD PREVIEW -->
+  <div class="dashboard-preview">
+    <div class="preview-wrapper">
+      <div class="preview-bar">
+        <div class="preview-dots">
+          <div class="preview-dot" style="background:#FF5F56"></div>
+          <div class="preview-dot" style="background:#FFBD2E"></div>
+          <div class="preview-dot" style="background:#27C93F"></div>
+        </div>
+        <div class="preview-url">app.flowsync.io/dashboard</div>
+        <div style="font-size:0.72rem;color:var(--text3)">Ligado • 24ms</div>
+      </div>
+      <!-- MINI DASHBOARD PREVIEW -->
+      <div style="padding:1.5rem;display:grid;grid-template-columns:200px 1fr;gap:0;background:var(--bg);">
+        <!-- MINI SIDEBAR -->
+        <div style="background:var(--bg2);border-right:1px solid var(--border);padding:1rem 0.75rem;border-radius:0">
+          <div style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);padding:0.3rem 0.5rem 0.5rem;font-weight:600">Principal</div>
+          <div style="background:var(--bg3);border-radius:7px;padding:0.45rem 0.65rem;font-size:0.78rem;color:var(--text);display:flex;align-items:center;gap:7px;margin-bottom:2px"><span style="color:var(--accent)">⚡</span> Workflows</div>
+          <div style="padding:0.45rem 0.65rem;font-size:0.78rem;color:var(--text2);display:flex;align-items:center;gap:7px;margin-bottom:2px">📊 Analytics</div>
+          <div style="padding:0.45rem 0.65rem;font-size:0.78rem;color:var(--text2);display:flex;align-items:center;gap:7px">🔗 Integrações</div>
+        </div>
+        <!-- MINI MAIN -->
+        <div style="padding:1.25rem;background:var(--bg)">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.25rem">
+            <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem">
+              <div style="font-size:0.7rem;color:var(--text2);margin-bottom:4px">Execuções hoje</div>
+              <div style="font-size:1.6rem;font-weight:700;letter-spacing:-0.03em">14.2k</div>
+              <div style="font-size:0.68rem;color:var(--green)">↑ +18% vs ontem</div>
+            </div>
+            <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem">
+              <div style="font-size:0.7rem;color:var(--text2);margin-bottom:4px">Taxa de sucesso</div>
+              <div style="font-size:1.6rem;font-weight:700;letter-spacing:-0.03em">99.4%</div>
+              <div style="font-size:0.68rem;color:var(--text3)">↔ estável</div>
+            </div>
+            <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem">
+              <div style="font-size:0.7rem;color:var(--text2);margin-bottom:4px">Tempo poupado</div>
+              <div style="font-size:1.6rem;font-weight:700;letter-spacing:-0.03em;color:var(--accent)">52h</div>
+              <div style="font-size:0.68rem;color:var(--text3)">esta semana</div>
+            </div>
+            <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem">
+              <div style="font-size:0.7rem;color:var(--text2);margin-bottom:4px">Workflows ativos</div>
+              <div style="font-size:1.6rem;font-weight:700;letter-spacing:-0.03em">37</div>
+              <div style="font-size:0.68rem;color:var(--green)">↑ 3 novos</div>
+            </div>
+          </div>
+          <!-- MINI CHART BARS -->
+          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem">
+            <div style="font-size:0.78rem;font-weight:600;margin-bottom:1rem">Execuções por hora</div>
+            <div style="display:flex;align-items:flex-end;gap:5px;height:80px">
+              <div style="flex:1;background:var(--accent-dim);border-radius:3px 3px 0 0;border-top:2px solid var(--accent);height:35%"></div>
+              <div style="flex:1;background:var(--accent-dim);border-radius:3px 3px 0 0;border-top:2px solid var(--accent);height:52%"></div>
+              <div style="flex:1;background:var(--accent-dim);border-radius:3px 3px 0 0;border-top:2px solid var(--accent);height:45%"></div>
+              <div style="flex:1;background:var(--accent-dim);border-radius:3px 3px 0 0;border-top:2px solid var(--accent);height:70%"></div>
+              <div style="flex:1;background:var(--accent-dim);border-radius:3px 3px 0 0;border-top:2px solid var(--accent);height:60%"></div>
+              <div style="flex:1;background:var(--accent-dim);border-radius:3px 3px 0 0;border-top:2px solid var(--accent);height:88%"></div>
+              <div style="flex:1;background:var(--accent-dim);border-radius:3px 3px 0 0;border-top:2px solid var(--accent);height:75%"></div>
+              <div style="flex:1;background:rgba(245,158,11,0.3);border-radius:3px 3px 0 0;border-top:2px solid var(--accent);height:100%"></div>
+              <div style="flex:1;background:var(--accent-dim);border-radius:3px 3px 0 0;border-top:2px solid var(--accent);height:82%"></div>
+              <div style="flex:1;background:var(--accent-dim);border-radius:3px 3px 0 0;border-top:2px solid var(--accent);height:68%"></div>
+              <div style="flex:1;background:var(--accent-dim);border-radius:3px 3px 0 0;border-top:2px solid var(--accent);height:55%"></div>
+              <div style="flex:1;background:var(--accent-dim);border-radius:3px 3px 0 0;border-top:2px solid var(--accent);height:42%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURES BENTO -->
+  <section class="section" id="features">
+    <div class="section-eyebrow">Funcionalidades</div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:3rem">
+      <div class="section-headline">Tudo o que precisas para<br>escalar sem limites.</div>
+      <div class="section-sub" style="max-width:340px">Construído por engenheiros que trabalharam no Stripe, Figma e Vercel. Cada detalhe foi pensado para produtividade máxima.</div>
+    </div>
+    <div class="features-bento">
+      <div class="bento-card bento-wide" style="background:linear-gradient(135deg,var(--accent-dim2) 0%,var(--bg2) 100%);border-color:rgba(245,158,11,0.2)">
+        <div class="bento-icon" style="background:var(--accent-dim)">⚡</div>
+        <h3>Editor visual de workflows</h3>
+        <p>Drag-and-drop intuitivo com lógica condicional, loops, branches e tratamento de erros. Sem código, sem limites. Exporta para YAML/JSON quando precisas.</p>
+        <div style="margin-top:1.5rem;background:var(--bg3);border-radius:10px;padding:1rem;font-family:var(--font-mono);font-size:0.72rem;color:var(--text2)">
+          <div style="color:var(--accent);margin-bottom:4px"># workflow.yaml</div>
+          <div style="color:var(--text3)">trigger: <span style="color:var(--green)">webhook</span></div>
+          <div style="color:var(--text3)">steps:</div>
+          <div style="color:var(--text3);padding-left:12px">- ai.classify → <span style="color:var(--accent)">router</span></div>
+          <div style="color:var(--text3);padding-left:12px">- crm.update → <span style="color:var(--blue)">notify</span></div>
+        </div>
+      </div>
+      <div class="bento-card bento-tall">
+        <div class="bento-icon" style="background:var(--purple-dim)">🤖</div>
+        <h3>IA generativa nativa</h3>
+        <p>Integra Claude, GPT-4, Gemini em qualquer step. Classifica, resume, traduz, gera texto e decide com base em contexto real.</p>
+        <div style="margin-top:1.5rem;display:flex;flex-direction:column;gap:8px">
+          <div style="background:var(--bg3);border-radius:8px;padding:0.7rem;font-size:0.75rem">
+            <div style="color:var(--text3);margin-bottom:3px;font-size:0.65rem">Input</div>
+            <div style="color:var(--text2)">"O cliente cancelou a subscrição após 2 meses..."</div>
+          </div>
+          <div style="text-align:center;font-size:0.7rem;color:var(--purple)">↓ Claude AI</div>
+          <div style="background:var(--purple-dim);border:1px solid rgba(139,92,246,0.2);border-radius:8px;padding:0.7rem;font-size:0.75rem">
+            <div style="color:var(--text3);margin-bottom:3px;font-size:0.65rem">Classificação</div>
+            <div style="color:var(--text)">Churn • Alta prioridade • Razão: preço</div>
+          </div>
+        </div>
+      </div>
+      <div class="bento-card">
+        <div class="bento-icon" style="background:var(--blue-dim)">🔗</div>
+        <h3>+350 integrações</h3>
+        <p>Salesforce, HubSpot, Slack, Notion, Jira, WhatsApp, Stripe e muito mais. API universal para qualquer serviço.</p>
+      </div>
+      <div class="bento-card">
+        <div class="bento-icon" style="background:var(--green-dim)">📊</div>
+        <h3>Analytics granular</h3>
+        <p>Monitora cada execução em tempo real. Identifica gargalos, latências e falhas antes que impactem o negócio.</p>
+      </div>
+      <div class="bento-card">
+        <div class="bento-icon" style="background:var(--red-dim)">🔐</div>
+        <h3>Enterprise Security</h3>
+        <p>SOC2 Type II, RGPD, SSO, RBAC e auditoria completa. Encriptação end-to-end em todos os dados.</p>
+      </div>
+      <div class="bento-card">
+        <div class="bento-icon" style="background:var(--pink-dim)">🚀</div>
+        <h3>Escala serverless</h3>
+        <p>Arquitetura distribuída que processa milhões de eventos por segundo. Auto-scaling sem configuração.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTEGRATIONS -->
+  <section class="section" id="integrations" style="padding-top:2rem">
+    <div class="section-eyebrow">Integrações</div>
+    <div class="section-headline">Conecta com o que já usas.</div>
+    <div class="integrations-grid">
+      <div class="integration-pill"><span class="int-icon">📧</span>Gmail</div>
+      <div class="integration-pill"><span class="int-icon">💼</span>Salesforce</div>
+      <div class="integration-pill"><span class="int-icon">💬</span>Slack</div>
+      <div class="integration-pill"><span class="int-icon">📝</span>Notion</div>
+      <div class="integration-pill"><span class="int-icon">🎯</span>HubSpot</div>
+      <div class="integration-pill"><span class="int-icon">🔷</span>Jira</div>
+      <div class="integration-pill"><span class="int-icon">💳</span>Stripe</div>
+      <div class="integration-pill"><span class="int-icon">🗄️</span>PostgreSQL</div>
+      <div class="integration-pill"><span class="int-icon">☁️</span>AWS S3</div>
+      <div class="integration-pill"><span class="int-icon">📱</span>WhatsApp</div>
+      <div class="integration-pill"><span class="int-icon">🤖</span>Claude AI</div>
+      <div class="integration-pill"><span class="int-icon">📊</span>Google Sheets</div>
+      <div class="integration-pill"><span class="int-icon">🐙</span>GitHub</div>
+      <div class="integration-pill"><span class="int-icon">🔺</span>Vercel</div>
+      <div class="integration-pill"><span class="int-icon">📡</span>Webhook</div>
+      <div class="integration-pill"><span class="int-icon">🌐</span>REST API</div>
+      <div class="integration-pill"><span class="int-icon">⚡</span>Zapier</div>
+      <div class="integration-pill" style="background:var(--accent-dim);border-color:rgba(245,158,11,0.2);color:var(--accent)"><span>+333</span> mais</div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <div class="testimonials" id="testimonials">
+    <div class="testimonials-inner">
+      <div class="section-eyebrow">Testemunhos</div>
+      <div class="section-headline">O que dizem os nossos clientes.</div>
+      <div class="testi-grid">
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-text">"Reduziamos <strong>40 horas semanais</strong> de trabalho manual no onboarding. Em 3 semanas com o FlowSync, esse número caiu para 4. É simplesmente <strong>transformador</strong>."</p>
+          <div class="testi-author">
+            <div class="testi-av" style="background:#7C3AED;color:white">MR</div>
+            <div><div class="testi-name">Maria Rodrigues</div><div class="testi-role">CTO · Infraspeak, Porto</div></div>
+          </div>
+        </div>
+        <div class="testi-card" style="border-color:rgba(245,158,11,0.2);background:linear-gradient(135deg,var(--accent-dim2),var(--bg3))">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-text">"O editor visual é o melhor que já usei. Conseguimos <strong>automatizar o ciclo de vendas</strong> completo sem escrever uma linha de código. O ROI foi visível em 2 semanas."</p>
+          <div class="testi-author">
+            <div class="testi-av" style="background:#059669;color:white">PS</div>
+            <div><div class="testi-name">Pedro Santos</div><div class="testi-role">VP Sales · Farfetch, Lisboa</div></div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-text">"A integração de <strong>IA generativa</strong> mudou tudo. Triamos 500+ tickets por dia automaticamente, com 97% de precisão. A nossa equipa de suporte adora."</p>
+          <div class="testi-author">
+            <div class="testi-av" style="background:#DC2626;color:white">AC</div>
+            <div><div class="testi-name">Ana Costa</div><div class="testi-role">Head of Ops · Uniplaces, Lisboa</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-band">
+    <div class="stats-inner">
+      <div class="stat-item"><div class="stat-num">12M+</div><div class="stat-label">Execuções por mês</div></div>
+      <div class="stat-item"><div class="stat-num">4.800+</div><div class="stat-label">Empresas ativas</div></div>
+      <div class="stat-item"><div class="stat-num">99.97%</div><div class="stat-label">Uptime garantido</div></div>
+      <div class="stat-item"><div class="stat-num">2.3h</div><div class="stat-label">Poupadas/utilizador/dia</div></div>
+    </div>
+  </div>
+
+  <!-- PRICING -->
+  <section class="section" id="pricing">
+    <div class="section-eyebrow">Preços</div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:0">
+      <div class="section-headline">Simples, transparente,<br>sem surpresas.</div>
+      <div class="section-sub" style="max-width:320px">Todos os planos incluem onboarding dedicado, acesso à API e atualizações automáticas.</div>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="plan-badge">Starter</div>
+        <div class="plan-name">Gratuito</div>
+        <div class="plan-price"><div class="plan-amount">€0</div><div class="plan-period">/mês para sempre</div></div>
+        <p class="plan-desc">Ideal para freelancers e projetos pessoais que querem experimentar automação.</p>
+        <hr class="plan-divider">
+        <ul class="plan-features">
+          <li><span class="fi fi-yes">✓</span> 5 workflows ativos</li>
+          <li><span class="fi fi-yes">✓</span> 1.000 execuções/mês</li>
+          <li><span class="fi fi-yes">✓</span> 50+ integrações</li>
+          <li><span class="fi fi-yes">✓</span> Histórico 7 dias</li>
+          <li><span class="fi fi-no">–</span> <span style="color:var(--text3)">IA generativa</span></li>
+          <li><span class="fi fi-no">–</span> <span style="color:var(--text3)">Suporte prioritário</span></li>
+        </ul>
+        <button class="btn-plan" onclick="showApp()">Começar grátis</button>
+      </div>
+      <div class="price-card featured">
+        <div class="plan-badge">Pro <span class="plan-popular">Mais popular</span></div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price"><div class="plan-amount">€49</div><div class="plan-period">/utilizador/mês</div></div>
+        <p class="plan-desc" style="color:rgba(255,255,255,0.5)">Para equipas que querem automação séria com IA integrada.</p>
+        <hr class="plan-divider">
+        <ul class="plan-features">
+          <li><span class="fi fi-yes">✓</span> Workflows ilimitados</li>
+          <li><span class="fi fi-yes">✓</span> 100.000 execuções/mês</li>
+          <li><span class="fi fi-yes">✓</span> +350 integrações</li>
+          <li><span class="fi fi-yes">✓</span> IA generativa incluída</li>
+          <li><span class="fi fi-yes">✓</span> Histórico 90 dias</li>
+          <li><span class="fi fi-yes">✓</span> Suporte 24/7</li>
+        </ul>
+        <button class="btn-plan" onclick="showApp()">Começar com Pro →</button>
+      </div>
+      <div class="price-card">
+        <div class="plan-badge">Enterprise</div>
+        <div class="plan-name">Enterprise</div>
+        <div class="plan-price"><div class="plan-amount">Custom</div></div>
+        <p class="plan-desc">Para empresas com requisitos de escala, segurança e suporte dedicado.</p>
+        <hr class="plan-divider">
+        <ul class="plan-features">
+          <li><span class="fi fi-yes">✓</span> Execuções ilimitadas</li>
+          <li><span class="fi fi-yes">✓</span> SLA 99.99% garantido</li>
+          <li><span class="fi fi-yes">✓</span> Deploy on-premise</li>
+          <li><span class="fi fi-yes">✓</span> SSO + RBAC avançado</li>
+          <li><span class="fi fi-yes">✓</span> Customer success dedicado</li>
+          <li><span class="fi fi-yes">✓</span> Formação e onboarding</li>
+        </ul>
+        <button class="btn-plan" onclick="showApp()">Falar com vendas</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section style="text-align:center;padding:6rem 2rem;max-width:700px;margin:0 auto">
+    <div class="section-eyebrow" style="text-align:center">Começa hoje</div>
+    <div class="section-headline" style="max-width:100%">Pronto para automatizar<br><em style="font-family:var(--font-serif);font-style:italic;color:var(--accent)">o futuro da tua empresa?</em></div>
+    <p style="font-size:1rem;color:var(--text2);margin:1.25rem auto 2.5rem;max-width:420px;line-height:1.75">Junta-te a mais de 4.800 empresas que já poupam centenas de horas por mês com o FlowSync.</p>
+    <div class="hero-actions" style="justify-content:center">
+      <button class="btn-lg btn-lg-accent" onclick="showApp()">Criar conta gratuita →</button>
+      <button class="btn-lg btn-lg-outline" onclick="showApp()">Ver preços</button>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="footer-logo-wrap"><div class="nav-logo-icon">⚡</div> FlowSync</div>
+          <p class="footer-tagline">A plataforma de automação com IA para equipas que querem mover-se rápido sem quebrar nada.</p>
+          <div style="display:flex;gap:8px">
+            <div style="width:32px;height:32px;background:var(--bg3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;border:1px solid var(--border)">𝕏</div>
+            <div style="width:32px;height:32px;background:var(--bg3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;border:1px solid var(--border)">in</div>
+            <div style="width:32px;height:32px;background:var(--bg3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;border:1px solid var(--border)">⑁</div>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Produto</h4>
+          <ul class="footer-links">
+            <li><a>Funcionalidades</a></li>
+            <li><a>Integrações</a></li>
+            <li><a>Preços</a></li>
+            <li><a>Changelog</a></li>
+            <li><a>Roadmap</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Recursos</h4>
+          <ul class="footer-links">
+            <li><a>Documentação</a></li>
+            <li><a>API Reference</a></li>
+            <li><a>Templates</a></li>
+            <li><a>Blog</a></li>
+            <li><a>Status</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Empresa</h4>
+          <ul class="footer-links">
+            <li><a>Sobre nós</a></li>
+            <li><a>Carreiras</a></li>
+            <li><a>Imprensa</a></li>
+            <li><a>Contacto</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul class="footer-links">
+            <li><a>Privacidade</a></li>
+            <li><a>Termos</a></li>
+            <li><a>Segurança</a></li>
+            <li><a>RGPD</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-copy">© 2025 FlowSync, Inc. · Porto, Portugal</div>
+        <div class="footer-badges">
+          <div class="footer-badge">SOC2</div>
+          <div class="footer-badge">ISO27001</div>
+          <div class="footer-badge">RGPD</div>
+          <div class="footer-badge">99.97% SLA</div>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ════════════════════════════════════════
+     APP PAGE
+════════════════════════════════════════ -->
+<div class="page" id="page-app">
+  <div class="app-layout" id="app-layout-main">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="app-sidebar">
+      <div class="sidebar-logo"><div class="sidebar-logo-icon">⚡</div> FlowSync</div>
+      <div class="sidebar-section-label">Principal</div>
+      <button class="sidebar-item active" id="sb-dashboard" onclick="goToSection('dashboard')"><span class="si-icon">📊</span> Dashboard</button>
+      <button class="sidebar-item" id="sb-workflows" onclick="goToSection('workflows')"><span class="si-icon">⚡</span> Workflows <span class="si-count">37</span></button>
+      <button class="sidebar-item" id="sb-editor" onclick="goToSection('editor')"><span class="si-icon">✏️</span> Editor</button>
+      <button class="sidebar-item" id="sb-analytics" onclick="goToSection('analytics')"><span class="si-icon">📈</span> Analytics</button>
+      <div class="sidebar-section-label">Recursos</div>
+      <button class="sidebar-item" onclick="showNotif('Integrações abertas!')"><span class="si-icon">🔗</span> Integrações <span class="si-count">12</span></button>
+      <button class="sidebar-item" onclick="showNotif('Histórico aberto!')"><span class="si-icon">📋</span> Histórico <span class="si-badge">3</span></button>
+      <button class="sidebar-item" onclick="showNotif('Templates abertos!')"><span class="si-icon">📁</span> Templates</button>
+      <div class="sidebar-section-label">Equipa</div>
+      <button class="sidebar-item" onclick="showNotif('Membros da equipa!')"><span class="si-icon">👥</span> Membros <span class="si-count">8</span></button>
+      <div class="sidebar-spacer"></div>
+      <button class="sidebar-item" id="sb-settings" onclick="goToSection('settings')"><span class="si-icon">⚙️</span> Configurações</button>
+      <div class="sidebar-user">
+        <div class="user-av">JP</div>
+        <div class="user-info">
+          <div class="user-name">João Pereira</div>
+          <div class="user-plan">✦ Plano Pro</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="app-main">
+
+      <!-- ══ DASHBOARD VIEW ══ -->
+      <div class="dash-view visible" id="view-dashboard" style="padding:2rem">
+        <div class="dash-header">
+          <div>
+            <div class="dash-title">Bom dia, João 👋</div>
+            <div class="dash-sub">Segunda-feira, 15 de março 2026 · Lisboa, Portugal</div>
+          </div>
+          <div class="dash-actions">
+            <button class="btn-ghost" onclick="openCmd()">⌘ Pesquisar</button>
+            <button class="btn-accent" onclick="openModal('modal-new-wf')">+ Novo workflow</button>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-label">Execuções hoje <span class="kpi-trend up">↑ +18%</span></div>
+            <div class="kpi-value">14.284</div>
+            <div class="kpi-desc">vs 12.105 ontem</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Taxa de sucesso <span class="kpi-trend up">↑ +0.2%</span></div>
+            <div class="kpi-value">99.4%</div>
+            <div class="kpi-desc">86 falhas resolvidas automaticamente</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Tempo poupado <span class="kpi-trend up">↑ esta semana</span></div>
+            <div class="kpi-value" style="color:var(--accent)">52h</div>
+            <div class="kpi-desc">equivalente a ~€2.600 em custo</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Custo IA <span class="kpi-trend down">↑ +€4.20</span></div>
+            <div class="kpi-value">€18.40</div>
+            <div class="kpi-desc">de €50.00 incluídos no plano</div>
+          </div>
+        </div>
+
+        <div class="dash-grid">
+          <div class="chart-card">
+            <div class="chart-header">
+              <div class="chart-title">Execuções — últimas 12h</div>
+              <div class="chart-legend">
+                <div><span class="legend-dot" style="background:var(--accent)"></span>Sucesso</div>
+                <div><span class="legend-dot" style="background:var(--red)"></span>Falha</div>
+              </div>
+            </div>
+            <div class="chart-area">
+              <canvas id="mainChart"></canvas>
+            </div>
+          </div>
+
+          <div class="activity-card">
+            <div class="chart-header">
+              <div class="chart-title">Atividade recente</div>
+              <button style="font-size:0.75rem;color:var(--accent);background:none;border:none;cursor:pointer">Ver tudo →</button>
+            </div>
+            <div class="activity-list">
+              <div class="activity-item">
+                <div class="act-icon" style="background:var(--green-dim)">✓</div>
+                <div class="act-text"><div class="act-name">Onboarding · Cliente #4821</div><div class="act-meta">3 steps · 2.1s · via Webhook</div></div>
+                <div class="act-time">agora</div>
+              </div>
+              <div class="activity-item">
+                <div class="act-icon" style="background:var(--blue-dim)">⚡</div>
+                <div class="act-text"><div class="act-name">Sync CRM → Slack</div><div class="act-meta">5 steps · 0.8s · via Agenda</div></div>
+                <div class="act-time">2min</div>
+              </div>
+              <div class="activity-item">
+                <div class="act-icon" style="background:var(--purple-dim)">🤖</div>
+                <div class="act-text"><div class="act-name">AI Triagem suporte #1293</div><div class="act-meta">Classificado: billing · Alta prioridade</div></div>
+                <div class="act-time">5min</div>
+              </div>
+              <div class="activity-item">
+                <div class="act-icon" style="background:var(--red-dim)">⚠</div>
+                <div class="act-text"><div class="act-name">Email drip — Timeout</div><div class="act-meta">Retry automático em 30s</div></div>
+                <div class="act-time">8min</div>
+              </div>
+              <div class="activity-item">
+                <div class="act-icon" style="background:var(--green-dim)">✓</div>
+                <div class="act-text"><div class="act-name">Relatório semanal gerado</div><div class="act-meta">PDF enviado para 12 destinatários</div></div>
+                <div class="act-time">15min</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WORKFLOWS TABLE -->
+        <div class="table-card">
+          <div class="table-header-row">
+            <div style="font-size:0.9rem;font-weight:600">Workflows ativos</div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <input class="table-search" placeholder="🔍 Pesquisar workflows..." oninput="filterTable(this.value)">
+              <button class="btn-ghost" style="font-size:0.8rem">Filtrar</button>
+              <button class="btn-accent" onclick="openModal('modal-new-wf')" style="font-size:0.8rem">+ Novo</button>
+            </div>
+          </div>
+          <table class="data-table" id="wf-table">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Estado</th>
+                <th>Execuções</th>
+                <th>Taxa sucesso</th>
+                <th>Tempo médio</th>
+                <th>Última exec.</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="wf-tbody">
+              <tr>
+                <td><div class="wf-name-cell"><div class="wf-icon" style="background:var(--green-dim)">📧</div><div><div class="wf-title">Onboarding de clientes</div><div class="wf-id">wf_on_4821</div></div></div></td>
+                <td><span class="status-pill status-active"><span class="status-dot"></span>Ativo</span></td>
+                <td>1.284/dia</td>
+                <td style="color:var(--green)">99.8%</td>
+                <td>2.1s</td>
+                <td>Agora</td>
+                <td><button style="font-size:0.75rem;background:none;border:none;color:var(--accent);cursor:pointer" onclick="goToSection('editor')">Editar →</button></td>
+              </tr>
+              <tr>
+                <td><div class="wf-name-cell"><div class="wf-icon" style="background:var(--blue-dim)">🔗</div><div><div class="wf-title">Sync CRM → Slack</div><div class="wf-id">wf_crm_0291</div></div></div></td>
+                <td><span class="status-pill status-active"><span class="status-dot"></span>Ativo</span></td>
+                <td>8.420/dia</td>
+                <td style="color:var(--green)">99.9%</td>
+                <td>0.8s</td>
+                <td>2 min</td>
+                <td><button style="font-size:0.75rem;background:none;border:none;color:var(--accent);cursor:pointer" onclick="goToSection('editor')">Editar →</button></td>
+              </tr>
+              <tr>
+                <td><div class="wf-name-cell"><div class="wf-icon" style="background:var(--purple-dim)">🤖</div><div><div class="wf-title">AI Triagem de suporte</div><div class="wf-id">wf_ai_0094</div></div></div></td>
+                <td><span class="status-pill status-active"><span class="status-dot"></span>Ativo</span></td>
+                <td>534/dia</td>
+                <td style="color:var(--green)">97.2%</td>
+                <td>4.3s</td>
+                <td>5 min</td>
+                <td><button style="font-size:0.75rem;background:none;border:none;color:var(--accent);cursor:pointer" onclick="goToSection('editor')">Editar →</button></td>
+              </tr>
+              <tr>
+                <td><div class="wf-name-cell"><div class="wf-icon" style="background:var(--accent-dim)">📊</div><div><div class="wf-title">Relatório semanal IA</div><div class="wf-id">wf_rep_0031</div></div></div></td>
+                <td><span class="status-pill status-paused"><span class="status-dot"></span>Agendado</span></td>
+                <td>7/semana</td>
+                <td style="color:var(--accent)">100%</td>
+                <td>18.2s</td>
+                <td>Dom 08:00</td>
+                <td><button style="font-size:0.75rem;background:none;border:none;color:var(--accent);cursor:pointer" onclick="goToSection('editor')">Editar →</button></td>
+              </tr>
+              <tr>
+                <td><div class="wf-name-cell"><div class="wf-icon" style="background:var(--red-dim)">⚠️</div><div><div class="wf-title">Email drip campanha Q1</div><div class="wf-id">wf_eml_0188</div></div></div></td>
+                <td><span class="status-pill status-error"><span class="status-dot"></span>Erro</span></td>
+                <td>240/dia</td>
+                <td style="color:var(--red)">89.1%</td>
+                <td>3.7s</td>
+                <td>8 min</td>
+                <td><button style="font-size:0.75rem;background:none;border:none;color:var(--accent);cursor:pointer" onclick="goToSection('editor')">Editar →</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ══ WORKFLOWS VIEW ══ -->
+      <div class="dash-view" id="view-workflows" style="padding:2rem">
+        <div class="dash-header">
+          <div><div class="dash-title">Workflows</div><div class="dash-sub">37 workflows · 14 ativos hoje</div></div>
+          <button class="btn-accent" onclick="openModal('modal-new-wf')">+ Novo workflow</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:1rem">
+          <!-- workflow cards -->
+          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;cursor:pointer;transition:all 0.15s" onmouseenter="this.style.borderColor='rgba(245,158,11,0.4)'" onmouseleave="this.style.borderColor='var(--border)'" onclick="goToSection('editor')">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem">
+              <div style="width:40px;height:40px;background:var(--green-dim);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px">📧</div>
+              <span class="status-pill status-active"><span class="status-dot"></span>Ativo</span>
+            </div>
+            <div style="font-weight:600;margin-bottom:4px">Onboarding de clientes</div>
+            <div style="font-size:0.75rem;color:var(--text2);margin-bottom:1rem">Webhook → IA → CRM → Email → Slack</div>
+            <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--text3)">
+              <span>1.284 exec/dia</span><span>99.8% sucesso</span>
+            </div>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;cursor:pointer;transition:all 0.15s" onmouseenter="this.style.borderColor='rgba(245,158,11,0.4)'" onmouseleave="this.style.borderColor='var(--border)'" onclick="goToSection('editor')">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem">
+              <div style="width:40px;height:40px;background:var(--blue-dim);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px">🔗</div>
+              <span class="status-pill status-active"><span class="status-dot"></span>Ativo</span>
+            </div>
+            <div style="font-weight:600;margin-bottom:4px">Sync CRM → Slack</div>
+            <div style="font-size:0.75rem;color:var(--text2);margin-bottom:1rem">Salesforce → Transformar → Slack</div>
+            <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--text3)">
+              <span>8.420 exec/dia</span><span>99.9% sucesso</span>
+            </div>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;cursor:pointer;transition:all 0.15s;border:2px dashed var(--border)" onmouseenter="this.style.borderColor='var(--accent)'" onmouseleave="this.style.borderColor='var(--border)'" onclick="openModal('modal-new-wf')">
+            <div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:1rem;text-align:center">
+              <div style="width:40px;height:40px;background:var(--bg3);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px">+</div>
+              <div style="font-size:0.85rem;font-weight:600">Novo workflow</div>
+              <div style="font-size:0.75rem;color:var(--text3)">Começa do zero ou usa um template</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ EDITOR VIEW ══ -->
+      <div class="dash-view" id="view-editor" style="padding:0;height:calc(100vh - 60px)">
+        <div class="editor-layout">
+          <!-- LEFT PANEL - NODE PALETTE -->
+          <div class="editor-panel">
+            <div class="editor-panel-header">
+              <div style="font-size:0.82rem;font-weight:600">Onboarding de clientes</div>
+              <div style="font-size:0.7rem;color:var(--text3);margin-top:2px">wf_on_4821 · Guardado há 2 min</div>
+            </div>
+            <div class="node-palette">
+              <div class="palette-section">
+                <div class="palette-title">Triggers</div>
+                <div class="palette-item"><div class="palette-icon" style="background:var(--green-dim)">🔔</div> Webhook</div>
+                <div class="palette-item"><div class="palette-icon" style="background:var(--blue-dim)">⏰</div> Agenda</div>
+                <div class="palette-item"><div class="palette-icon" style="background:var(--purple-dim)">📧</div> Email recebido</div>
+                <div class="palette-item"><div class="palette-icon" style="background:var(--accent-dim)">⚡</div> Evento manual</div>
+              </div>
+              <div class="palette-section">
+                <div class="palette-title">IA & Dados</div>
+                <div class="palette-item"><div class="palette-icon" style="background:var(--purple-dim)">🤖</div> Claude AI</div>
+                <div class="palette-item"><div class="palette-icon" style="background:var(--blue-dim)">🧠</div> GPT-4o</div>
+                <div class="palette-item"><div class="palette-icon" style="background:var(--bg4)">🔄</div> Transformar</div>
+                <div class="palette-item"><div class="palette-icon" style="background:var(--bg4)">🔀</div> Router/Condição</div>
+              </div>
+              <div class="palette-section">
+                <div class="palette-title">Ações</div>
+                <div class="palette-item"><div class="palette-icon" style="background:var(--green-dim)">📧</div> Enviar email</div>
+                <div class="palette-item"><div class="palette-icon" style="background:var(--bg4)">💬</div> Enviar Slack</div>
+                <div class="palette-item"><div class="palette-icon" style="background:var(--blue-dim)">💼</div> Update CRM</div>
+                <div class="palette-item"><div class="palette-icon" style="background:var(--bg4)">🗄️</div> Update DB</div>
+                <div class="palette-item"><div class="palette-icon" style="background:var(--accent-dim)">📊</div> HTTP Request</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CANVAS -->
+          <div class="editor-canvas" id="editor-canvas">
+            <div class="canvas-grid"></div>
+
+            <!-- TOOLBAR -->
+            <div class="editor-toolbar">
+              <button class="tool-btn active" title="Selecionar">↖</button>
+              <button class="tool-btn" title="Mover canvas">✋</button>
+              <div class="tool-sep"></div>
+              <button class="tool-btn" title="Desfazer">↺</button>
+              <button class="tool-btn" title="Refazer">↻</button>
+              <div class="tool-sep"></div>
+              <button class="tool-btn" title="Zoom out" onclick="showNotif('Zoom out')">−</button>
+              <button class="tool-btn" style="font-size:0.65rem;width:auto;padding:0 6px" id="zoom-level">100%</button>
+              <button class="tool-btn" title="Zoom in" onclick="showNotif('Zoom in')">+</button>
+              <div class="tool-sep"></div>
+              <button class="tool-btn" title="Encaixar ecrã" onclick="showNotif('Fit to screen')">⊡</button>
+              <button class="tool-btn" title="Minimap" onclick="showNotif('Minimap toggled')">⊞</button>
+            </div>
+
+            <!-- WORKFLOW NODES -->
+            <div class="canvas-content">
+              <div class="wf-canvas" id="wf-canvas">
+                <svg class="wf-svg" id="wf-svg">
+                  <defs>
+                    <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                      <path d="M0,0 L0,6 L6,3 z" fill="rgba(255,255,255,0.15)"/>
+                    </marker>
+                    <marker id="arrow-active" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                      <path d="M0,0 L0,6 L6,3 z" fill="#F59E0B"/>
+                    </marker>
+                  </defs>
+                  <!-- Connectors -->
+                  <path class="wf-connector active" d="M 190,55 C 230,55 250,55 290,55" marker-end="url(#arrow-active)"/>
+                  <path class="wf-connector" d="M 450,55 C 490,55 510,55 550,55" marker-end="url(#arrow)"/>
+                  <path class="wf-connector" d="M 710,55 C 750,55 770,55 790,55" marker-end="url(#arrow)"/>
+                  <path class="wf-connector" d="M 630,85 C 630,130 430,160 430,180" marker-end="url(#arrow)"/>
+                  <path class="wf-connector active" d="M 590,180 C 630,180 650,180 690,180" marker-end="url(#arrow-active)"/>
+                </svg>
+
+                <!-- NODE 1: Trigger -->
+                <div class="wf-node selected" style="left:10px;top:28px" onclick="selectNode(this)">
+                  <div class="wf-node-port-out"></div>
+                  <div class="wf-node-header">
+                    <div class="wf-node-icon" style="background:var(--green-dim)">🔔</div>
+                    <div>
+                      <div class="wf-node-name">Webhook</div>
+                      <div class="wf-node-type">Trigger</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- NODE 2: IA -->
+                <div class="wf-node" style="left:290px;top:25px" onclick="selectNode(this)">
+                  <div class="wf-node-port-in"></div>
+                  <div class="wf-node-port-out"></div>
+                  <div class="wf-node-header">
+                    <div class="wf-node-icon" style="background:var(--purple-dim)">🤖</div>
+                    <div>
+                      <div class="wf-node-name">Claude AI</div>
+                      <div class="wf-node-type">Classificar</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- NODE 3: Router -->
+                <div class="wf-node" style="left:550px;top:28px;border-color:rgba(245,158,11,0.4)" onclick="selectNode(this)">
+                  <div class="wf-node-port-in"></div>
+                  <div class="wf-node-port-out"></div>
+                  <div class="wf-node-header">
+                    <div class="wf-node-icon" style="background:var(--accent-dim)">🔀</div>
+                    <div>
+                      <div class="wf-node-name">Router</div>
+                      <div class="wf-node-type">Condição</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- NODE 4: CRM -->
+                <div class="wf-node" style="left:790px;top:25px" onclick="selectNode(this)">
+                  <div class="wf-node-port-in"></div>
+                  <div class="wf-node-header">
+                    <div class="wf-node-icon" style="background:var(--blue-dim)">💼</div>
+                    <div>
+                      <div class="wf-node-name">Update CRM</div>
+                      <div class="wf-node-type">Salesforce</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- NODE 5: Email -->
+                <div class="wf-node" style="left:250px;top:155px" onclick="selectNode(this)">
+                  <div class="wf-node-port-in"></div>
+                  <div class="wf-node-port-out"></div>
+                  <div class="wf-node-header">
+                    <div class="wf-node-icon" style="background:var(--green-dim)">📧</div>
+                    <div>
+                      <div class="wf-node-name">Enviar Email</div>
+                      <div class="wf-node-type">Boas-vindas</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- NODE 6: Slack -->
+                <div class="wf-node" style="left:690px;top:155px" onclick="selectNode(this)">
+                  <div class="wf-node-port-in"></div>
+                  <div class="wf-node-header">
+                    <div class="wf-node-icon" style="background:var(--bg4)">💬</div>
+                    <div>
+                      <div class="wf-node-name">Notif. Slack</div>
+                      <div class="wf-node-type">#onboarding</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- RUN STATUS BAR -->
+            <div class="run-status">
+              <div class="run-dot"></div>
+              <span>Ativo · última execução há 3 seg</span>
+              <div class="run-sep"></div>
+              <span>6 nodes · 5 connectors</span>
+              <div class="run-sep"></div>
+              <button style="background:var(--green);color:var(--bg);border:none;border-radius:6px;padding:3px 12px;font-size:0.75rem;font-weight:600;cursor:pointer" onclick="showNotif('Workflow a correr em modo de teste!')">▶ Testar</button>
+              <button style="background:var(--bg3);color:var(--text2);border:1px solid var(--border2);border-radius:6px;padding:3px 12px;font-size:0.75rem;cursor:pointer" onclick="showNotif('Workflow guardado!')">💾 Guardar</button>
+            </div>
+          </div>
+
+          <!-- RIGHT PANEL - PROPERTIES -->
+          <div class="editor-panel right">
+            <div class="editor-panel-header">
+              <div class="editor-panel-title">Propriedades do node</div>
+            </div>
+            <div class="prop-panel" id="prop-panel">
+              <div class="prop-section">
+                <div class="prop-label">Webhook Trigger</div>
+                <div class="prop-field">
+                  <label>URL do endpoint</label>
+                  <input class="prop-input prop-select" value="https://hooks.flowsync.io/wf_on_4821" readonly>
+                </div>
+                <div class="prop-field">
+                  <label>Método HTTP</label>
+                  <select class="prop-input prop-select">
+                    <option>POST</option>
+                    <option>GET</option>
+                    <option>PUT</option>
+                  </select>
+                </div>
+                <div class="prop-field">
+                  <label>Autenticação</label>
+                  <select class="prop-input prop-select">
+                    <option>Bearer Token</option>
+                    <option>API Key</option>
+                    <option>Nenhuma</option>
+                  </select>
+                </div>
+              </div>
+              <div class="prop-section">
+                <div class="prop-label">Configurações</div>
+                <div class="prop-field">
+                  <div class="prop-toggle">
+                    <label style="color:var(--text2);font-size:0.8rem">Retry automático</label>
+                    <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+                  </div>
+                </div>
+                <div class="prop-field">
+                  <div class="prop-toggle">
+                    <label style="color:var(--text2);font-size:0.8rem">Logs detalhados</label>
+                    <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+                  </div>
+                </div>
+                <div class="prop-field">
+                  <div class="prop-toggle">
+                    <label style="color:var(--text2);font-size:0.8rem">Timeout custom</label>
+                    <button class="toggle" onclick="this.classList.toggle('on')"></button>
+                  </div>
+                </div>
+              </div>
+              <div class="prop-section">
+                <div class="prop-label">Última execução</div>
+                <div style="background:var(--bg3);border-radius:8px;padding:0.75rem;font-family:var(--font-mono);font-size:0.7rem;color:var(--text2)">
+                  <div style="color:var(--green);margin-bottom:4px">✓ SUCCESS · 2.1s</div>
+                  <div>POST /wf_on_4821</div>
+                  <div style="color:var(--text3)">payload: 2.3kb</div>
+                  <div style="color:var(--text3)">2026-03-15 14:23:01</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ ANALYTICS VIEW ══ -->
+      <div class="dash-view" id="view-analytics" style="padding:2rem">
+        <div class="analytics-header">
+          <div><div class="dash-title">Analytics</div><div class="dash-sub">Métricas detalhadas de todos os teus workflows</div></div>
+          <div class="time-tabs">
+            <button class="time-tab active" onclick="setTimeTab(this,'24h')">24h</button>
+            <button class="time-tab" onclick="setTimeTab(this,'7d')">7 dias</button>
+            <button class="time-tab" onclick="setTimeTab(this,'30d')">30 dias</button>
+            <button class="time-tab" onclick="setTimeTab(this,'90d')">90 dias</button>
+          </div>
+        </div>
+
+        <div class="kpi-row" style="margin-bottom:1.5rem">
+          <div class="kpi-card"><div class="kpi-label">Total execuções <span class="kpi-trend up">↑ +23%</span></div><div class="kpi-value">284.120</div><div class="kpi-desc">vs 231.040 período anterior</div></div>
+          <div class="kpi-card"><div class="kpi-label">Tempo poupado <span class="kpi-trend up">↑ +19%</span></div><div class="kpi-value" style="color:var(--accent)">312h</div><div class="kpi-desc">~€15.600 em custo evitado</div></div>
+          <div class="kpi-card"><div class="kpi-label">Custo IA usado <span class="kpi-trend down">↑ +€8.40</span></div><div class="kpi-value">€41.20</div><div class="kpi-desc">de €150.00 incluídos</div></div>
+          <div class="kpi-card"><div class="kpi-label">P95 latência <span class="kpi-trend up">↓ -12%</span></div><div class="kpi-value">1.8s</div><div class="kpi-desc">melhor dos últimos 90 dias</div></div>
+        </div>
+
+        <div class="analytics-grid">
+          <div class="chart-card">
+            <div class="chart-header"><div class="chart-title">Volume de execuções</div></div>
+            <div class="chart-area"><canvas id="analyticsChart1"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div class="chart-title">Taxa de sucesso por workflow</div></div>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-top:0.5rem">
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text2);margin-bottom:4px"><span>Onboarding</span><span style="color:var(--green)">99.8%</span></div>
+                <div style="height:6px;background:var(--bg4);border-radius:3px"><div style="height:100%;width:99.8%;background:var(--green);border-radius:3px"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text2);margin-bottom:4px"><span>Sync CRM</span><span style="color:var(--green)">99.9%</span></div>
+                <div style="height:6px;background:var(--bg4);border-radius:3px"><div style="height:100%;width:99.9%;background:var(--green);border-radius:3px"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text2);margin-bottom:4px"><span>AI Triagem</span><span style="color:var(--accent)">97.2%</span></div>
+                <div style="height:6px;background:var(--bg4);border-radius:3px"><div style="height:100%;width:97.2%;background:var(--accent);border-radius:3px"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text2);margin-bottom:4px"><span>Email drip</span><span style="color:var(--red)">89.1%</span></div>
+                <div style="height:6px;background:var(--bg4);border-radius:3px"><div style="height:100%;width:89.1%;background:var(--red);border-radius:3px"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div class="chart-title">Heatmap de atividade (por hora do dia)</div></div>
+            <div style="font-size:0.7rem;color:var(--text3);margin-bottom:6px">00h → 23h</div>
+            <div class="heatmap-grid" id="heatmap"></div>
+            <div style="display:flex;justify-content:flex-end;gap:4px;margin-top:8px;align-items:center">
+              <span style="font-size:0.65rem;color:var(--text3)">Menos</span>
+              <div style="width:10px;height:10px;border-radius:2px;background:var(--bg3)"></div>
+              <div style="width:10px;height:10px;border-radius:2px;background:rgba(245,158,11,0.15)"></div>
+              <div style="width:10px;height:10px;border-radius:2px;background:rgba(245,158,11,0.45)"></div>
+              <div style="width:10px;height:10px;border-radius:2px;background:var(--accent)"></div>
+              <span style="font-size:0.65rem;color:var(--text3)">Mais</span>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div class="chart-title">Custo de IA por workflow</div></div>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:0.5rem">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:0.65rem 0.9rem;background:var(--bg3);border-radius:8px;font-size:0.8rem">
+                <div style="display:flex;align-items:center;gap:8px"><span>🤖</span>AI Triagem</div>
+                <div style="font-weight:600;color:var(--accent)">€24.80</div>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:0.65rem 0.9rem;background:var(--bg3);border-radius:8px;font-size:0.8rem">
+                <div style="display:flex;align-items:center;gap:8px"><span>📊</span>Relatório IA</div>
+                <div style="font-weight:600;color:var(--accent)">€12.30</div>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:0.65rem 0.9rem;background:var(--bg3);border-radius:8px;font-size:0.8rem">
+                <div style="display:flex;align-items:center;gap:8px"><span>📧</span>Email copy</div>
+                <div style="font-weight:600;color:var(--accent)">€4.10</div>
+              </div>
+              <div style="border-top:1px solid var(--border);padding-top:8px;display:flex;justify-content:space-between;font-size:0.82rem;font-weight:600">
+                <span>Total usado</span>
+                <span>€41.20 / €150.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ SETTINGS VIEW ══ -->
+      <div class="dash-view" id="view-settings" style="padding:0">
+        <div class="settings-layout">
+          <div class="settings-nav">
+            <div style="font-size:0.82rem;font-weight:600;padding:0.75rem;color:var(--text2);margin-bottom:4px">Configurações</div>
+            <div class="settings-nav-item active" onclick="setSettingsTab(this)">👤 Perfil</div>
+            <div class="settings-nav-item" onclick="setSettingsTab(this)">💳 Faturação</div>
+            <div class="settings-nav-item" onclick="setSettingsTab(this)">👥 Equipa</div>
+            <div class="settings-nav-item" onclick="setSettingsTab(this)">🔗 Integrações</div>
+            <div class="settings-nav-item" onclick="setSettingsTab(this)">🔐 Segurança</div>
+            <div class="settings-nav-item" onclick="setSettingsTab(this)">🔔 Notificações</div>
+            <div class="settings-nav-item" onclick="setSettingsTab(this)">⚙️ API & Webhooks</div>
+          </div>
+          <div class="settings-content">
+            <div class="settings-section">
+              <div class="settings-title">Perfil</div>
+              <div class="settings-desc">Gere as tuas informações pessoais e preferências de conta.</div>
+              <div class="settings-field">
+                <div class="settings-field-info"><label>Nome completo</label><p>O teu nome visível na plataforma</p></div>
+                <div class="settings-input-wrap"><input class="settings-input" value="João Pereira"></div>
+              </div>
+              <div class="settings-field">
+                <div class="settings-field-info"><label>Email</label><p>Para notificações e faturação</p></div>
+                <div class="settings-input-wrap"><input class="settings-input" value="joao@empresa.pt"></div>
+              </div>
+              <div class="settings-field">
+                <div class="settings-field-info"><label>Empresa</label><p>Nome da organização</p></div>
+                <div class="settings-input-wrap"><input class="settings-input" value="FlowSync Demo, Lda."></div>
+              </div>
+              <div class="settings-field">
+                <div class="settings-field-info"><label>Fuso horário</label><p>Para agendamentos e relatórios</p></div>
+                <div class="settings-input-wrap">
+                  <select class="settings-input">
+                    <option selected>Europe/Lisbon (UTC+0)</option>
+                    <option>Europe/London</option>
+                    <option>Europe/Berlin</option>
+                  </select>
+                </div>
+              </div>
+              <button class="btn-accent" style="margin-top:1rem" onclick="showNotif('Perfil atualizado com sucesso!')">Guardar alterações</button>
+            </div>
+
+            <div class="settings-section">
+              <div class="settings-title">Plano atual</div>
+              <div class="plan-card-settings">
+                <div>
+                  <div class="current-plan-name">✦ Plano Pro</div>
+                  <div class="current-plan-desc">Renovação automática em 1 de abril 2026 · €49/mês</div>
+                  <div class="usage-bar-wrap" style="max-width:400px">
+                    <div class="usage-label"><span>Execuções este mês</span><span>67.420 / 100.000</span></div>
+                    <div class="usage-bar"><div class="usage-fill" style="width:67.4%"></div></div>
+                  </div>
+                </div>
+                <button class="btn-accent" onclick="showPage('landing'); setTimeout(()=>scrollToSection('pricing'),300)">Upgrade para Enterprise →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+// ═══════════════════════════════════
+// PAGE & NAVIGATION SYSTEM
+// ═══════════════════════════════════
+let currentPage = 'landing';
+let currentSection = 'dashboard';
+
+function showPage(p) {
+  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+  document.getElementById('page-' + p).classList.add('active');
+  currentPage = p;
+
+  const isApp = p === 'app';
+  document.getElementById('nav-landing-links').style.display = isApp ? 'none' : 'flex';
+  document.getElementById('nav-app-links').style.display = isApp ? 'flex' : 'none';
+  document.getElementById('nav-login-btn').style.display = isApp ? 'none' : 'block';
+  document.getElementById('nav-signup-btn').style.display = isApp ? 'none' : 'block';
+  document.getElementById('nav-cmd-btn').style.display = isApp ? 'block' : 'none';
+  document.getElementById('nav-avatar').style.display = isApp ? 'flex' : 'none';
+
+  if (isApp) { initCharts(); generateHeatmap(); }
+}
+
+function showApp() {
+  showPage('app');
+  goToSection('dashboard');
+}
+
+function scrollToSection(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({behavior:'smooth'});
+}
+
+// ═══════════════════════════════════
+// APP SECTIONS
+// ═══════════════════════════════════
+function goToSection(s) {
+  currentSection = s;
+  document.querySelectorAll('.dash-view').forEach(el => el.classList.remove('visible'));
+  const v = document.getElementById('view-' + s);
+  if (v) v.classList.add('visible');
+
+  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+  const sb = document.getElementById('sb-' + s);
+  if (sb) sb.classList.add('active');
+
+  document.querySelectorAll('[id^=navbtn-]').forEach(el => el.classList.remove('active-nav'));
+  const nb = document.getElementById('navbtn-' + s);
+  if (nb) nb.classList.add('active-nav');
+
+  // Special case: editor hides sidebar
+  const sidebar = document.getElementById('app-sidebar');
+  const layout = document.getElementById('app-layout-main');
+  if (s === 'editor') {
+    layout.style.gridTemplateColumns = '1fr';
+    sidebar.style.display = 'none';
+  } else {
+    layout.style.gridTemplateColumns = '220px 1fr';
+    sidebar.style.display = 'flex';
+  }
+}
+
+// ═══════════════════════════════════
+// MODAL SYSTEM
+// ═══════════════════════════════════
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+function selectTemplate(el) {
+  document.querySelectorAll('#template-grid .template-item').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function createWorkflow() {
+  const name = document.getElementById('wf-name-input').value || 'Novo workflow';
+  closeModal('modal-new-wf');
+  goToSection('editor');
+  showNotif('Workflow "' + name + '" criado!');
+}
+
+// ═══════════════════════════════════
+// NOTIFICATIONS
+// ═══════════════════════════════════
+let notifTimer = null;
+function showNotif(msg) {
+  document.getElementById('notif-msg').textContent = msg;
+  const n = document.getElementById('notif');
+  n.classList.add('show');
+  if (notifTimer) clearTimeout(notifTimer);
+  notifTimer = setTimeout(() => n.classList.remove('show'), 3500);
+}
+function hideNotif() {
+  document.getElementById('notif').classList.remove('show');
+}
+
+// ═══════════════════════════════════
+// COMMAND PALETTE
+// ═══════════════════════════════════
+function openCmd() {
+  document.getElementById('cmd-palette').classList.add('open');
+  setTimeout(() => document.getElementById('cmd-input').focus(), 50);
+}
+function closeCmd() {
+  document.getElementById('cmd-palette').classList.remove('open');
+  document.getElementById('cmd-input').value = '';
+}
+function filterCmd(q) { /* simplified */ }
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openCmd(); }
+  if (e.key === 'Escape') { closeCmd(); closeModal('modal-new-wf'); }
+});
+document.getElementById('cmd-palette').addEventListener('click', e => {
+  if (e.target === document.getElementById('cmd-palette')) closeCmd();
+});
+document.getElementById('modal-new-wf').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-new-wf')) closeModal('modal-new-wf');
+});
+
+// ═══════════════════════════════════
+// WORKFLOW NODE SELECTION
+// ═══════════════════════════════════
+function selectNode(el) {
+  document.querySelectorAll('.wf-node').forEach(n => n.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ═══════════════════════════════════
+// TABLE FILTER
+// ═══════════════════════════════════
+function filterTable(q) {
+  const rows = document.querySelectorAll('#wf-tbody tr');
+  rows.forEach(r => {
+    r.style.display = r.textContent.toLowerCase().includes(q.toLowerCase()) ? '' : 'none';
+  });
+}
+
+// ═══════════════════════════════════
+// SETTINGS TABS
+// ═══════════════════════════════════
+function setSettingsTab(el) {
+  document.querySelectorAll('.settings-nav-item').forEach(e => e.classList.remove('active'));
+  el.classList.add('active');
+}
+function setTimeTab(el) {
+  document.querySelectorAll('.time-tab').forEach(e => e.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ═══════════════════════════════════
+// HEATMAP
+// ═══════════════════════════════════
+function generateHeatmap() {
+  const h = document.getElementById('heatmap');
+  if (!h) return;
+  h.innerHTML = '';
+  const levels = ['','heat-low','heat-med','heat-high','heat-max'];
+  const pattern = [0,0,1,1,1,2,2,3,3,4,4,4,4,3,3,2,2,3,4,4,3,2,1,0];
+  pattern.forEach((lvl, i) => {
+    const d = document.createElement('div');
+    d.className = 'heat-cell ' + (levels[lvl] || '');
+    d.title = `${i}h: ${lvl * 25}% atividade`;
+    h.appendChild(d);
+  });
+}
+
+// ═══════════════════════════════════
+// CHARTS (Chart.js)
+// ═══════════════════════════════════
+let chartsInit = false;
+function initCharts() {
+  if (chartsInit) return;
+  chartsInit = true;
+
+  const chartDefaults = {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: {
+      backgroundColor: '#18181B', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1,
+      titleColor: '#FAFAFA', bodyColor: '#A1A1AA', padding: 10, cornerRadius: 8
+    }},
+    scales: {
+      x: { grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false }, ticks: { color: '#52525B', font: { size: 11 } } },
+      y: { grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false }, ticks: { color: '#52525B', font: { size: 11 } } }
+    }
+  };
+
+  // MAIN DASHBOARD CHART
+  const ctx1 = document.getElementById('mainChart');
+  if (ctx1) {
+    const labels = ['02:00','04:00','06:00','08:00','10:00','12:00','14:00','16:00','18:00','20:00','22:00','00:00'];
+    new Chart(ctx1, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          { label: 'Sucesso', data: [320,280,410,890,1240,1380,1520,1290,1100,980,760,430], backgroundColor: 'rgba(245,158,11,0.2)', borderColor: '#F59E0B', borderWidth: 2, borderRadius: 4, borderSkipped: false },
+          { label: 'Falha', data: [4,2,6,8,12,10,14,11,9,7,5,3], backgroundColor: 'rgba(239,68,68,0.2)', borderColor: '#EF4444', borderWidth: 2, borderRadius: 4, borderSkipped: false }
+        ]
+      },
+      options: { ...chartDefaults, plugins: { ...chartDefaults.plugins, legend: { display: true, labels: { color: '#A1A1AA', font: { size: 11 }, boxWidth: 12, boxHeight: 12, borderRadius: 3 }}} }
+    });
+  }
+
+  // ANALYTICS CHART
+  const ctx2 = document.getElementById('analyticsChart1');
+  if (ctx2) {
+    const labels = Array.from({length:24}, (_,i) => i + 'h');
+    new Chart(ctx2, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Execuções',
+          data: [320,280,200,150,180,420,890,1240,1380,1520,1400,1290,1100,980,1050,1200,1380,1490,1100,850,760,600,430,320],
+          borderColor: '#F59E0B', backgroundColor: 'rgba(245,158,11,0.05)',
+          borderWidth: 2, fill: true, tension: 0.4, pointRadius: 0, pointHoverRadius: 5,
+          pointHoverBackgroundColor: '#F59E0B'
+        }]
+      },
+      options: chartDefaults
+    });
+  }
+}
+
+// ═══════════════════════════════════
+// INIT
+// ═══════════════════════════════════
+showPage('landing');
+</script>
+</body>
+</html>
